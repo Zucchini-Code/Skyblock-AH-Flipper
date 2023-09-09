@@ -25,3 +25,19 @@ import aiohttp
 # print("a")
 # asyncio.run(getAllPages())
 # print("b")
+
+async def grabAPI(page):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(f"https://api.hypixel.net/skyblock/auctions?page={page}") as response:
+            checkPage = await response.json()
+            print(checkPage["page"])
+            return checkPage["page"]
+
+async def getAllPages():
+    pages = await asyncio.gather(*(grabAPI(page) for page in range(10)))
+    return pages
+
+print("a")
+frog = asyncio.run(getAllPages())
+print(frog)
+print("b")

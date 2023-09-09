@@ -1,14 +1,16 @@
 import pygame
 import requests
+import aiohttp
+import numpy as np
 import pandas as pd
-import time
 import asyncio
+import time
 
+# 
 while True:
     auction_request = requests.get("https://api.hypixel.net/skyblock/auctions").json()
 
     auction_pages = auction_request["totalPages"]
-    auction_number = auction_request["totalAuctions"]
     auction_data = auction_request["auctions"]
     
     for pages in range(1, auction_pages):
