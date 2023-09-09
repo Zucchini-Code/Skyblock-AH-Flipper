@@ -3,6 +3,7 @@ import requests
 import aiohttp
 
 
+# Simple Sleep Example
 # async def grabAPI(sec):
 #     print("Start")
 #     await asyncio.sleep(sec)
@@ -16,6 +17,7 @@ import aiohttp
 # print("b")
 
 
+# Example of why requests doesnt work
 # async def grabAPI(page):
 #     print(requests.get(f"https://api.hypixel.net/skyblock/auctions?page={page}").json()["page"])
 
@@ -26,6 +28,8 @@ import aiohttp
 # asyncio.run(getAllPages())
 # print("b")
 
+
+# Working example using AIOHTTP
 async def grabAPI(page):
     async with aiohttp.ClientSession() as session:
         async with session.get(f"https://api.hypixel.net/skyblock/auctions?page={page}") as response:
