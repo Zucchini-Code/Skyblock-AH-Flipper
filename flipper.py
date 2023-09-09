@@ -18,7 +18,7 @@ async def get_page(page_number):
 
 # Use asyncio to "gather" all pages asynchrononously and return list
 async def get_all_pages(total_pages):
-    auction_data = await asyncio.gather(*(get_page(page_number) for page_number in range(total_pages)))
+    auction_data = await asyncio.gather(*(get_page(page_number) for page_number in range(total_pages - 1)))
     return auction_data
 
 
@@ -32,7 +32,7 @@ while True:
     auction_data = pd.DataFrame(asyncio.run(get_all_pages(total_pages)))
 
     # Remove all auctions that aren't BIN auctions
-    auction_data = auction_data.loc[auction_data.bin, :]
+    # auction_data = auction_data.loc[auction_data.bin, :]
 
     print(auction_data)
     time.sleep(15)
