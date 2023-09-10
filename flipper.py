@@ -12,7 +12,7 @@ async def get_page(session, url):
         print("Got Page " + str(page['page'] + 1))
         return page['auctions']
 
-async def main():
+async def main(total_pages):
     async with aiohttp.ClientSession() as session:
 
         # Create list of tasks (different API calls)
@@ -27,16 +27,16 @@ async def main():
 
 
 start = time.time()
-
-total_pages = 60
+# total_pages = 50
+total_pages = requests.get("https://api.hypixel.net/skyblock/auctions").json()["totalPages"]
 print("Total Pages: " + str(total_pages))
-asyncio.run(main())
+
+auction_data = asyncio.run(main(total_pages))
+# auction_data = [item for sublist in auction_data for item in sublist]
+# auction_data = pd.DataFrame(auction_data)
+# auction_data = auction_data.loc[auction_data.bin, :]
+# print(auction_data)
 
 end = time.time()
 elapsed = end - start
 print("Operation took " + str(elapsed) + " seconds")
-
-
-# total_pages = requests.get("https://api.hypixel.net/skyblock/auctions").json()["totalPages"]
-# Remove all auctions that aren't BIN auctions
-# auction_data = auction_data.loc[auction_data.bin, :]
