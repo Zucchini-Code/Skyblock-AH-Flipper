@@ -36,7 +36,7 @@ start = time.time()
 # Initial request to get the time last updated and the total page count
 initial_request = requests.get("https://api.hypixel.net/skyblock/auctions").json()
 total_pages = initial_request["totalPages"]
-update_time = initial_request["lastUpdated"]
+update_time = datetime.datetime.fromtimestamp(initial_request["lastUpdated"]/1000)
 
 # Asynchronously call all pages, then flatten list
 auction_data = asyncio.run(main(total_pages))
