@@ -28,7 +28,12 @@ async def main(total_pages):
         # Then gather and return all responses as a list
         return await asyncio.gather(*tasks)
 
-
+# Flatten list, convert to dataframe, and remove non-bin auctions
+def make_dataframe(auction_data):
+    auction_data = [item for sublist in auction_data for item in sublist]
+    auction_data = pd.DataFrame(auction_data)
+    auction_data = auction_data.loc[auction_data.bin, :]
+    return auction_data
 
 # Start timing operation
 start = time.time()
@@ -40,11 +45,7 @@ update_time = datetime.datetime.fromtimestamp(initial_request["lastUpdated"]/100
 
 # Asynchronously call all pages, then flatten list
 auction_data = asyncio.run(main(total_pages))
-auction_data = [item for sublist in auction_data for item in sublist]
-
-# Make flattened list into dataframe and remove all non-bin
-auction_data = pd.DataFrame(auction_data)
-auction_data = auction_data.loc[auction_data.bin, :]
+auction_data = make_dataframe(auction_data)
 
 # Print dataframe
 print(auction_data)
