@@ -6,6 +6,8 @@ import datetime
 import aiohttp
 import asyncio
 
+#main auction api link:      https://api.hypixel.net/skyblock/auctions
+#auctions ended api link:    https://api.hypixel.net/skyblock/auctions_ended
 
 # Asynchronous function for getting a single page
 async def get_page(session, url):
@@ -22,10 +24,10 @@ async def main(total_pages):
         tasks = []
         for page_number in range(total_pages):
             url = f"https://api.hypixel.net/skyblock/auctions?page={page_number}"
-            print("Requesting Page " + str(page_number + 1))
             tasks.append(asyncio.ensure_future(get_page(session, url)))
 
         # Then gather and return all responses as a list
+        print("Requesting Pages!")
         return await asyncio.gather(*tasks)
 
 # Flatten list, convert to dataframe, and remove non-bin auctions
@@ -35,22 +37,40 @@ def make_dataframe(auction_data):
     auction_data = auction_data.loc[auction_data.bin, :]
     return auction_data
 
-# Start timing operation
-start = time.time()
+# Keep polling until the auction data gets updated
+def wait_for_update():
+    print("Waiting for update...")
+    previous_timestamp = requests.get("https://api.hypixel.net/skyblock/auctions").json()["lastUpdated"]
+    current_timestamp = previous_timestamp
+    waiting_timer_start = time.time()
+    while previous_timestamp == current_timestamp:
+        current_timestamp = requests.get("https://api.hypixel.net/skyblock/auctions").json()["lastUpdated"]
+    waiting_timer_end = time.time()
+    print(f"Update Detected: Waited {waiting_timer_end - waiting_timer_start} seconds")
 
 # Initial request to get the time last updated and the total page count
-initial_request = requests.get("https://api.hypixel.net/skyblock/auctions").json()
-total_pages = initial_request["totalPages"]
-update_time = datetime.datetime.fromtimestamp(initial_request["lastUpdated"]/1000)
+def initial_request():
+    initial_request = requests.get("https://api.hypixel.net/skyblock/auctions").json()
+    total_pages = initial_request["totalPages"]
+    print("Page Count: " + str(total_pages) + ". Last Updated: " + str(datetime.datetime.fromtimestamp(initial_request["lastUpdated"]/1000)))
+    return total_pages
+
+
+# Wait for the API to update, then make the initial request
+wait_for_update()
+total_pages = initial_request()
 
 # Asynchronously call all pages, then flatten list
 auction_data = asyncio.run(main(total_pages))
 auction_data = make_dataframe(auction_data)
 
-# Print dataframe
-print(auction_data)
+# Infinite loop
+while True:
 
-# End timing operation
-end = time.time()
-elapsed = end - start
-print("Operation took " + str(elapsed) + " seconds")
+    # Print dataframe
+    print(auction_data)
+
+    requests.get("https://api.hypixel.net/skyblock/auctions").json()["lastUpdated"]
+
+    # Then wait for update
+    wait_for_update()
