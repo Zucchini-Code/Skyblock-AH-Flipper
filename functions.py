@@ -6,12 +6,14 @@ import datetime
 import aiohttp
 import asyncio
 
+
 # Asynchronous function for getting a single page
 async def get_page(session, url):
     async with session.get(url) as response:
         page = await response.json()
         print("Got Page: " + str(page['page'] + 1) + ", Time Updated: " + str(datetime.datetime.fromtimestamp(page["lastUpdated"]/1000)))
         return page['auctions']
+
 
 # Asynchronously get all pages with aiohttp
 async def main(total_pages):
@@ -27,12 +29,14 @@ async def main(total_pages):
         print("Requesting Pages!")
         return await asyncio.gather(*tasks)
 
+
 # Flatten list, convert to dataframe, and remove non-bin auctions
 def make_dataframe(auction_data):
     auction_data = [item for sublist in auction_data for item in sublist]
     auction_data = pd.DataFrame(auction_data)
     auction_data = auction_data.loc[auction_data.bin, :]
     return auction_data
+
 
 # Keep polling until the auction data gets updated
 def wait_for_update():
@@ -44,6 +48,7 @@ def wait_for_update():
         current_timestamp = requests.get("https://api.hypixel.net/skyblock/auctions").json()["lastUpdated"]
     waiting_timer_end = time.time()
     print(f"Update Detected: Waited {waiting_timer_end - waiting_timer_start} seconds")
+
 
 # Initial request to get the time last updated and the total page count
 def initial_request():
