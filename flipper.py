@@ -11,7 +11,7 @@ import asyncio
 async def get_page(session, url):
     async with session.get(url) as response:
         page = await response.json()
-        print("Got Page " + str(page['page'] + 1))
+        print("Got Page: " + str(page['page'] + 1) + ", Time Updated: " + str(datetime.datetime.fromtimestamp(page["lastUpdated"]/1000)))
         return page['auctions']
 
 # Asynchronously get all pages with aiohttp
