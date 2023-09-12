@@ -21,10 +21,12 @@ while True:
     # Wait for update
     f.wait_for_update()
 
-    # Get new auctions and auctions ended in the last minute
+    # Get new auctions and auctions ended in the last minute, and drop non-bin auctions
     print("Getting new auction data...")
     new_auctions = pd.DataFrame(requests.get("https://api.hypixel.net/skyblock/auctions?page=0").json()["auctions"])
     ended_auctions = pd.DataFrame(requests.get("https://api.hypixel.net/skyblock/auctions_ended").json()["auctions"])
+    new_auctions = new_auctions.loc[new_auctions.bin, :]
+    ended_auctions = ended_auctions.loc[ended_auctions.bin, :]
 
     # Print dataframe and save CSVs
     print(auction_data)
