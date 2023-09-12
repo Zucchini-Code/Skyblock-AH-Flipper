@@ -4,6 +4,8 @@ import requests
 import pandas as pd
 import time
 
+pd.DataFrame(requests.get("https://api.hypixel.net/resources/skyblock/items").json()["items"]).to_csv("CSVs/items.csv")
+
 # Wait for the API to update, then make the initial request
 f.wait_for_update()
 total_pages = f.initial_request()
