@@ -28,6 +28,9 @@ while True:
     new_auctions = new_auctions.loc[new_auctions.bin, :]
     ended_auctions = ended_auctions.loc[ended_auctions.bin, :]
 
+    # Remove ended auctions
+
+
     # Print dataframe and save CSVs
     print(auction_data)
     auction_data.to_csv("CSVs/auction_data.csv")
