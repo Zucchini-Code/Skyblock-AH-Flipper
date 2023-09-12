@@ -32,6 +32,9 @@ while True:
     auction_data = pd.concat([new_auctions, auction_data])
     auction_data = auction_data.drop_duplicates(subset=["uuid"])
 
+    # Remove ended auctions
+    auction_data = auction_data[~auction_data['uuid'].isin(ended_auctions['auction_id'])]
+
     # Print dataframe and save CSVs
     print(auction_data)
     auction_data.to_csv("CSVs/auction_data.csv")
