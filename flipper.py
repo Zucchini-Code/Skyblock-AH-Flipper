@@ -6,7 +6,7 @@ import time
 
 pd.DataFrame(requests.get("https://api.hypixel.net/resources/skyblock/items").json()["items"]).to_csv("CSVs/items.csv")
 api_key = open("apikey.txt", "r").read()
-pd.DataFrame(requests.get("https://api.hypixel.net/skyblock/auction?uuid=fbe3227298ba418793bc3c049c65c6c1",headers={"Api-Key":api_key}).json()).to_csv("CSVs/individual_item.csv")
+pd.DataFrame(requests.get("https://api.hypixel.net/skyblock/auction?uuid=fbe3227298ba418793bc3c049c65c6c1",headers={"Api-Key":api_key}).json()["auctions"]).to_csv("CSVs/individual_item.csv")
 
 # Wait for the API to update, then make the initial request
 f.wait_for_update()
