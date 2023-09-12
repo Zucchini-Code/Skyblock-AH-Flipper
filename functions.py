@@ -47,7 +47,7 @@ def wait_for_update():
     while previous_timestamp == current_timestamp:
         current_timestamp = requests.get("https://api.hypixel.net/skyblock/auctions").json()["lastUpdated"]
     waiting_timer_end = time.time()
-    print(f"Update Detected: Waited {waiting_timer_end - waiting_timer_start} seconds")
+    print(f"Update Detected: Waited {round(waiting_timer_end - waiting_timer_start)} seconds")
 
 
 # Initial request to get the time last updated and the total page count

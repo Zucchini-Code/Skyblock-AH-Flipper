@@ -8,7 +8,7 @@ import time
 f.wait_for_update()
 total_pages = f.initial_request()
 
-# Asynchronously call all pages, then flatten list
+# Asynchronously call all pages, then make dataframe
 start = time.time()
 auction_data = f.asyncio.run(f.main(total_pages))
 auction_data = f.make_dataframe(auction_data)
@@ -24,6 +24,9 @@ while True:
 
     # Print dataframe
     print(auction_data)
+    auction_data.to_csv("CSVs/auction_data.csv")
+    new_auctions.to_csv("CSVs/new_auctions.csv")
+    ended_auctions.to_csv("CSVs/ended_auctions.csv")
 
     # Then wait for update
     f.wait_for_update()
