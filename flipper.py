@@ -13,13 +13,14 @@ start = time.time()
 auction_data = f.asyncio.run(f.main(total_pages))
 auction_data = f.make_dataframe(auction_data)
 end = time.time()
-print("Async operation took " + round(end - start) + " seconds.")
+print("Async operation took " + str(round(end - start)) + " seconds.")
 
 # Infinite loop
 while True:
 
-    # Get auctions ended in the last minute
-    ended = pd.DataFrame(requests.get("https://api.hypixel.net/skyblock/auctions_ended").json()["auctions"])
+    # Get new auctions and auctions ended in the last minute
+    new_auctions = pd.DataFrame(requests.get("https://api.hypixel.net/skyblock/auctions?page=0").json()["auctions"])
+    ended_auctions = pd.DataFrame(requests.get("https://api.hypixel.net/skyblock/auctions_ended").json()["auctions"])
 
     # Print dataframe
     print(auction_data)
