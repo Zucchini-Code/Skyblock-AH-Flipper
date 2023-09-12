@@ -28,8 +28,9 @@ while True:
     new_auctions = new_auctions.loc[new_auctions.bin, :]
     ended_auctions = ended_auctions.loc[ended_auctions.bin, :]
 
-    # Remove ended auctions
-
+    # Add in new auctions and remove dupes
+    auction_data = pd.concat([new_auctions, auction_data])
+    auction_data = auction_data.drop_duplicates(subset=["uuid"])
 
     # Print dataframe and save CSVs
     print(auction_data)
