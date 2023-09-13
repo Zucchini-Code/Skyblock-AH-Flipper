@@ -6,6 +6,8 @@ import datetime
 import aiohttp
 import asyncio
 
+# api_key = open("apikey.txt", "r").read()
+# pd.DataFrame(requests.get("https://api.hypixel.net/skyblock/auction?uuid=fbe3227298ba418793bc3c049c65c6c1",headers={"Api-Key":api_key}).json()["auctions"]).to_csv("CSVs/individual_item.csv")
 
 # Asynchronous function for getting a single page
 async def get_page(session, url):
@@ -56,3 +58,29 @@ def initial_request():
     total_pages = initial_request["totalPages"]
     print("Page Count: " + str(total_pages) + ". Last Updated: " + str(datetime.datetime.fromtimestamp(initial_request["lastUpdated"]/1000)))
     return total_pages
+
+# Initialise list of items
+def initialise_items_dataframe():
+    items_dataframe = pd.DataFrame(requests.get("https://api.hypixel.net/resources/skyblock/items").json()["items"])[["name"]]
+    items_dataframe.to_csv("CSVs/items.csv")
+    items_dataframe['auctions'] = [[] for row in range(len(items_dataframe))]
+    print("Items dataframe initialised!")
+    return items_dataframe
+
+# Update auction data with auctions created and deleted in the last minute
+def get_updated_data(auction_data):
+    # Get new auctions and auctions ended in the last minute, and drop non-bin auctions
+    print("Getting new auction data...")
+    new_auctions = pd.DataFrame(requests.get("https://api.hypixel.net/skyblock/auctions?page=0").json()["auctions"])
+    ended_auctions = pd.DataFrame(requests.get("https://api.hypixel.net/skyblock/auctions_ended").json()["auctions"])
+    new_auctions = new_auctions.loc[new_auctions.bin, :]
+    ended_auctions = ended_auctions.loc[ended_auctions.bin, :]
+
+    # Add in new auctions and remove dupes
+    auction_data = pd.concat([new_auctions, auction_data])
+    auction_data = auction_data.drop_duplicates(subset=["uuid"])
+
+    # Remove ended auctions
+    auction_data = auction_data[~auction_data['uuid'].isin(ended_auctions['auction_id'])]
+
+    return auction_data, new_auctions, ended_auctions
