@@ -5,6 +5,9 @@ import time
 import datetime
 import aiohttp
 import asyncio
+import nbt
+import base64
+import io
 
 # api_key = open("apikey.txt", "r").read()
 # pd.DataFrame(requests.get("https://api.hypixel.net/skyblock/auction?uuid=fbe3227298ba418793bc3c049c65c6c1",headers={"Api-Key":api_key}).json()["auctions"]).to_csv("CSVs/individual_item.csv")
@@ -37,6 +40,7 @@ def make_dataframe(auction_data):
     auction_data = [item for sublist in auction_data for item in sublist]
     auction_data = pd.DataFrame(auction_data)
     auction_data = auction_data.loc[auction_data.bin, :]
+    auction_data = auction_data.drop(['auctioneer', 'profile_id', 'coop', 'start', 'end', 'item_lore', 'extra', 'category', 'claimed', 'claimed_bidders', 'highest_bid_amount', 'last_updated','bin', 'bids', 'item_uuid'], axis=1)
     return auction_data
 
 
@@ -74,6 +78,7 @@ def get_updated_data(auction_data):
     new_auctions = pd.DataFrame(requests.get("https://api.hypixel.net/skyblock/auctions?page=0").json()["auctions"])
     ended_auctions = pd.DataFrame(requests.get("https://api.hypixel.net/skyblock/auctions_ended").json()["auctions"])
     new_auctions = new_auctions.loc[new_auctions.bin, :]
+    new_auctions = new_auctions.drop(['auctioneer', 'profile_id', 'coop', 'start', 'end', 'item_lore', 'extra', 'category', 'claimed', 'claimed_bidders', 'highest_bid_amount', 'last_updated','bin', 'bids', 'item_uuid'], axis=1)
     ended_auctions = ended_auctions.loc[ended_auctions.bin, :]
 
     # Add in new auctions and remove dupes
@@ -84,3 +89,7 @@ def get_updated_data(auction_data):
     auction_data = auction_data[~auction_data['uuid'].isin(ended_auctions['auction_id'])]
 
     return auction_data, new_auctions, ended_auctions
+
+def decode_inv_data(raw):
+    data = nbt.nbt.NBTFile(fileobj=io.BytesIO(base64.b64decode(raw))).json()
+    return data

@@ -1,6 +1,5 @@
 import functions as f
 import pygame
-import requests
 import pandas as pd
 import time
 
@@ -19,8 +18,6 @@ auction_data = f.make_dataframe(auction_data)
 end = time.time()
 print("Async operation took " + str(round(end - start)) + " seconds.")
 
-auction_data = auction_data.drop(['auctioneer', 'profile_id', 'coop', 'start', 'end', 'item_lore', 'extra', 'category', 'item_bytes', 'claimed', 'claimed_bidders', 'highest_bid_amount', 'last_updated','bin', 'bids', 'item_uuid'], axis=1)
-
 # Infinite loop
 while True:
 
@@ -35,5 +32,3 @@ while True:
     auction_data.to_csv("CSVs/auction_data.csv")
     new_auctions.to_csv("CSVs/new_auctions.csv")
     ended_auctions.to_csv("CSVs/ended_auctions.csv")
-
-    # items_to_remove = ['Minion I', 'Minion II', 'Minion III', 'Minion IV', 'Minion V', 'Minion VI', 'Minion VII', 'Minion VIII', 'Minion IX', 'Minion X', 'Minion XI' 'Minion XII']
