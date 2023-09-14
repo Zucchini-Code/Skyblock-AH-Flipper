@@ -5,12 +5,9 @@ import time
 import datetime
 import aiohttp
 import asyncio
-import nbt
+import python_nbt.nbt as nbt
 import base64
 import io
-
-# api_key = open("apikey.txt", "r").read()
-# pd.DataFrame(requests.get("https://api.hypixel.net/skyblock/auction?uuid=fbe3227298ba418793bc3c049c65c6c1",headers={"Api-Key":api_key}).json()["auctions"]).to_csv("CSVs/individual_item.csv")
 
 # Asynchronous function for getting a single page
 async def get_page(session, url):
@@ -91,5 +88,6 @@ def get_updated_data(auction_data):
     return auction_data, new_auctions, ended_auctions
 
 def decode_inv_data(raw):
-    data = nbt.nbt.NBTFile(fileobj=io.BytesIO(base64.b64decode(raw))).json()
-    return data
+    decode = nbt.read_from_nbt_file(io.BytesIO(base64.b64decode(raw)))
+    dict = nbt.NBTTagBase.json_obj(decode,full_json=True)
+    return dict

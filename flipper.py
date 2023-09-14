@@ -18,6 +18,8 @@ auction_data = f.make_dataframe(auction_data)
 end = time.time()
 print("Async operation took " + str(round(end - start)) + " seconds.")
 
+print(pd.DataFrame(f.decode_inv_data(auction_data.iloc[0]["item_bytes"])))
+
 # Infinite loop
 while True:
 
