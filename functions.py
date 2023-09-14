@@ -8,6 +8,7 @@ import asyncio
 import python_nbt.nbt as nbt
 import base64
 import io
+import json
 
 # Asynchronous function for getting a single page
 async def get_page(session, url):
@@ -89,5 +90,5 @@ def get_updated_data(auction_data):
 
 def decode_inv_data(raw):
     decode = nbt.read_from_nbt_file(io.BytesIO(base64.b64decode(raw)))
-    dict = nbt.NBTTagBase.json_obj(decode,full_json=False)
-    return dict
+    obj = json.loads(json.dumps(nbt.NBTTagBase.json_obj(decode,full_json=False)))["i"]
+    return obj

@@ -20,8 +20,9 @@ auction_data.to_csv("CSVs/initial_auctions.csv")
 print("Async operation took " + str(round(end - start)) + " seconds.")
 
 # Convert NBT data to dict
-test = pd.DataFrame(f.decode_inv_data(auction_data.iloc[0]["item_bytes"]))
-test.to_csv("CSVs/nbt.csv")
+test = f.decode_inv_data(auction_data.iloc[0]["item_bytes"])
+print(test)
+pd.DataFrame(test).to_csv("CSVs/nbt.csv")
 
 # Infinite loop
 while True:
