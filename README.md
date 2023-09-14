@@ -6,4 +6,4 @@ Currently a work in development.
 
 *Python Version: Python 3.11*
 
-*Dependencies: pip install pygame requests aiohttp numpy pandas*
+*Dependencies: pip install pygame requests aiohttp numpy pandas python-nbt*
