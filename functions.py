@@ -89,5 +89,5 @@ def get_updated_data(auction_data):
 
 def decode_inv_data(raw):
     decode = nbt.read_from_nbt_file(io.BytesIO(base64.b64decode(raw)))
-    dict = nbt.NBTTagBase.json_obj(decode,full_json=True)
+    dict = nbt.NBTTagBase.json_obj(decode,full_json=False)
     return dict

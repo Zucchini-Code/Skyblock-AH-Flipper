@@ -16,9 +16,12 @@ start = time.time()
 auction_data = f.asyncio.run(f.main(total_pages))
 auction_data = f.make_dataframe(auction_data)
 end = time.time()
+auction_data.to_csv("CSVs/initial_auctions.csv")
 print("Async operation took " + str(round(end - start)) + " seconds.")
 
-print(pd.DataFrame(f.decode_inv_data(auction_data.iloc[0]["item_bytes"])))
+# Convert NBT data to dict
+test = pd.DataFrame(f.decode_inv_data(auction_data.iloc[0]["item_bytes"]))
+test.to_csv("CSVs/nbt.csv")
 
 # Infinite loop
 while True:
