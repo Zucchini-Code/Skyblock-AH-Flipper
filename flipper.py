@@ -6,6 +6,7 @@ import time
 
 # Initialise items dataframe
 items_dataframe = f.initialise_items_dataframe()
+items_dataframe.to_csv("CSVs/items.csv")
 
 # Wait for the API to update, then make the initial request
 f.wait_for_update()
@@ -19,22 +20,6 @@ end = time.time()
 print("Async operation took " + str(round(end - start)) + " seconds.")
 
 auction_data = auction_data.drop(['auctioneer', 'profile_id', 'coop', 'start', 'end', 'item_lore', 'extra', 'category', 'item_bytes', 'claimed', 'claimed_bidders', 'highest_bid_amount', 'last_updated','bin', 'bids', 'item_uuid'], axis=1)
-
-def match_rows(name):
-    # Filter rows in df1 where the 'name' column contains the name
-    matches = auction_data[auction_data['item_name'].str.contains(name)]
-    return matches.to_dict(orient='records')
-
-items_dataframe['auctions'] = items_dataframe['name'].apply(match_rows)
-
-to_drop = []
-for name in items_dataframe['name']:
-    matched_indices = auction_data[auction_data['item_name'].str.contains(name)].index
-    to_drop.extend(matched_indices)
-auction_data = auction_data.drop(to_drop)
-
-auction_data.to_csv("CSVs/auction_data.csv")
-items_dataframe.to_csv("CSVs/items.csv")
 
 # Infinite loop
 while True:
@@ -51,5 +36,4 @@ while True:
     new_auctions.to_csv("CSVs/new_auctions.csv")
     ended_auctions.to_csv("CSVs/ended_auctions.csv")
 
-    
     # items_to_remove = ['Minion I', 'Minion II', 'Minion III', 'Minion IV', 'Minion V', 'Minion VI', 'Minion VII', 'Minion VIII', 'Minion IX', 'Minion X', 'Minion XI' 'Minion XII']
